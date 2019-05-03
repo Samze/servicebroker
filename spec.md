@@ -550,7 +550,7 @@ schema being used.
 | Response Field | Type | Description |
 | --- | --- | --- |
 | id* | string | A Uniform Resource Name ([URN](https://tools.ietf.org/html/rfc2141)) that uniquely identifies the extension. It MUST include the namespace identifier `osbext` and a specific string for the extension. For example `urn:osbext:backup/v1`.|
-| openapi* | string | A URI pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URI then it MUST have no authentication and be publicly available. If this is a relative URI then it is assumed to be hosted on the Service Broker and behind the [Service Broker Authentication](#service-broker-authentication). All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints.|
+| openapi_url* | string | A URI pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URI then it MUST have no authentication and be publicly available. If this is a relative URI then it MUST to be hosted on the Service Broker and behind the [Service Broker Authentication](#service-broker-authentication). All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints.|
 
 
 ```
@@ -648,7 +648,15 @@ schema being used.
       },
       "maintenance_info": {
         "version": "2.1.1+abcdef",
-      }
+      },
+      "extensions": [{
+        "id": "urn:osbext:backup/v1",
+        "openapi_url": "http://example.com/extensions/backup.yaml"
+      },
+      {
+        "id": "urn:osbext:restore/v1",
+        "openapi_url": "/extensions/restore.yaml"
+      }]
     }, {
       "name": "fake-plan-2",
       "id": "0f4008b5-XXXX-XXXX-XXXX-dace631cd648",
