@@ -506,7 +506,7 @@ how Platforms might expose these values to their users.
 | schemas | [Schemas](#schemas-object) | Schema definitions for Service Instances and Service Bindings for the Service Plan. |
 | maximum_polling_duration | integer | A duration, in seconds, that the Platform SHOULD use as the Service's [maximum polling duration](#polling-interval-and-duration). |
 | maintenance_info | [Maintenance Info](#maintenance-info) | Maintenance information for a Service Instance which is provisioned using the Service Plan. If provided, a version string MUST be provided and platforms MAY use this when [Provisioning](#provisioning) or [Updating](#updating-a-service-instance) a Service Instance. |
-| extensions | array of [Extension](#extensions-object) objects | An array of extensions that the Service Broker MAY return. If specified, the extensions are available on created Service Instances of this Service Plan. | 
+| extensions | array of [Extension](#extensions-object) objects | An array of extensions that the Service Broker MAY return. If specified, the extensions are available on created Service Instances of this Service Plan. |
 
 \* Fields with an asterisk are REQUIRED.
 
@@ -1270,8 +1270,8 @@ For success responses, the following fields are defined:
 ## Service Instance Extensions
 
 Service Instance Extensions allow Service Broker authors to define new endpoints
-that act on a Service Instance. This allows Service Broker authors to 
-extend the specification for Service specific operations. For example, 
+that act on a Service Instance. This allows Service Broker authors to
+extend the specification for Service specific operations. For example,
 Backup, Restore, Start, Stop and Ping.
 
 If the Service Broker has declared Service Instance extensions in the [Catalog](#catalog-management)
@@ -1304,7 +1304,7 @@ paths:
           description: Restart accepted
 ```
 
-In this case the broker MUST handle `PUT` requests to 
+In this case the broker MUST handle `PUT` requests to
 `/v2/service_instances/:instance_id/extensions/restart`.
 
 ## Binding
