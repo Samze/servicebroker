@@ -550,8 +550,9 @@ schema being used.
 | Response Field | Type | Description |
 | --- | --- | --- |
 | id* | string | A Uniform Resource Name ([URN](https://tools.ietf.org/html/rfc2141)) that uniquely identifies the extension. It MUST include the namespace identifier `osbext` and a specific string for the extension. For example `urn:osbext:backup/v1`.|
-| openapi_url* | string | A URI pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URI then it MUST have no authentication and be publicly available. If this is a relative URI then it MUST to be hosted on the Service Broker and behind the [Service Broker Authentication](#service-broker-authentication). All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints.|
+| openapi_url* | string | A URL pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URL then it MUST have no authentication and be publicly available. If this is a relative URL then it MUST to be hosted on the Service Broker. All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints. See [Service Instance Extensions](#service-instance-extensions) for more information.|
 
+\* Fields with an asterisk are REQUIRED.
 
 ```
 {
@@ -650,11 +651,11 @@ schema being used.
         "version": "2.1.1+abcdef",
       },
       "extensions": [{
-        "id": "urn:osbext:backup/v1",
-        "openapi_url": "http://example.com/extensions/backup.yaml"
+        "id": "urn:osbext:backup-and-restore/v1",
+        "openapi_url": "http://example.com/extensions/backup_restore.yaml"
       },
       {
-        "id": "urn:osbext:restore/v1",
+        "id": "urn:osbext:ping/v1",
         "openapi_url": "/extensions/restore.yaml"
       }]
     }, {
@@ -1271,15 +1272,17 @@ For success responses, the following fields are defined:
 Service Instance Extensions allow Service Broker authors to define new endpoints
 that act on a Service Instance. This allows Service Broker authors to 
 extend the specification for Service specific operations. For example, 
-backup & restore, MySQL set leader, ping etc.
+Backup, Restore, Start, Stop and Ping.
 
-If the Service Broker has declared Service Instance extensions in the [Catalog](#catalog)
+If the Service Broker has declared Service Instance extensions in the [Catalog](#catalog-management)
 then this route is used as the basepath to trigger the extension(s). The extension path(s)
 relative to this route are defined in the OpenAPI document returned
 in the [Extensions object](#extensions-object).
 
 #### Route
 `/v2/service_instances/:instance_id/extensions`
+
+:instance_id MUST be the ID of a previously provisioned Service Instance.
 
 For example a Service Broker may define a Service Instance Extension with the following OpenAPI
 document:
