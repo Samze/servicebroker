@@ -25,6 +25,7 @@
   - [Provisioning](#provisioning)
   - [Fetching a Service Instance](#fetching-a-service-instance)
   - [Updating a Service Instance](#updating-a-service-instance)
+  - [Service Instance Extensions](#service-instance-extensions)
   - [Binding](#binding)
     - [Types of Binding](#types-of-binding)
   - [Fetching a Service Binding](#fetching-a-service-binding)
@@ -117,9 +118,9 @@ that do not understand them.
 ### Changes Since v2.13
 
 * Added GET endpoints for fetching a
-  [Service Instance](https://github.com/openservicebrokerapi/servicebroker/blob/v2.14/spec.md#fetching-a-service-instance)
+  [Service Instance](https://github.com/openservicebrokerapi/servicebroker/blob/v2.14/Broker spec.md#fetching-a-service-instance)
   and
-  [Service Binding](https://github.com/openservicebrokerapi/servicebroker/blob/v2.14/spec.md#fetching-a-service-binding)
+  [Service Binding](https://github.com/openservicebrokerapi/servicebroker/blob/v2.14/Broker spec.md#fetching-a-service-binding)
 * Added support for asynchronous Service Bindings
   ([PR](https://github.com/openservicebrokerapi/servicebroker/pull/334))
   and a new
@@ -505,6 +506,7 @@ how Platforms might expose these values to their users.
 | schemas | [Schemas](#schemas-object) | Schema definitions for Service Instances and Service Bindings for the Service Plan. |
 | maximum_polling_duration | integer | A duration, in seconds, that the Platform SHOULD use as the Service's [maximum polling duration](#polling-interval-and-duration). |
 | maintenance_info | [Maintenance Info](#maintenance-info) | Maintenance information for a Service Instance which is provisioned using the Service Plan. If provided, a version string MUST be provided and platforms MAY use this when [Provisioning](#provisioning) or [Updating](#updating-a-service-instance) a Service Instance. |
+| extensions | array of [Extension](#extensions-object) objects | An array of extensions that the Service Broker MAY return. If specified, the extensions are available on created Service Instances of this Service Plan. | 
 
 \* Fields with an asterisk are REQUIRED.
 
@@ -542,6 +544,14 @@ The following rules apply if `parameters` is included anywhere in the catalog:
 schema being used.
 * Schemas MUST NOT contain any external references.
 * Schemas MUST NOT be larger than 64kB.
+
+##### Extensions Object
+
+| Response Field | Type | Description |
+| --- | --- | --- |
+| id* | string | A Uniform Resource Name ([URN](https://tools.ietf.org/html/rfc2141)) that uniquely identifies the extension. It MUST include the namespace identifier `osbext` and a specific string for the extension. For example `urn:osbext:backup/v1`.|
+| openapi* | string | A URI pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URI then it MUST have no authentication and be publicly available. If this is a relative URI then it is assumed to be hosted on the Service Broker and behind the [Service Broker Authentication](#service-broker-authentication). All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints.|
+
 
 ```
 {
@@ -1248,6 +1258,43 @@ For success responses, the following fields are defined:
 }
 ```
 
+## Service Instance Extensions
+
+Service Instance Extensions allow Service Broker authors to define new endpoints
+that act on a Service Instance. This allows Service Broker authors to 
+extend the specification for Service specific operations. For example, 
+backup & restore, MySQL set leader, ping etc.
+
+If the Service Broker has declared Service Instance extensions in the [Catalog](#catalog)
+then this route is used as the basepath to trigger the extension(s). The extension path(s)
+relative to this route are defined in the OpenAPI document returned
+in the [Extensions object](#extensions-object).
+
+#### Route
+`/v2/service_instances/:instance_id/extensions`
+
+For example a Service Broker may define a Service Instance Extension with the following OpenAPI
+document:
+
+```yaml
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Instance Restart
+paths:
+  /restart:
+    put:
+      summary: Restart the server
+      operationId: restart
+      tags:
+        - restart
+      responses:
+        '202':
+          description: Restart accepted
+```
+
+In this case the broker MUST handle `PUT` requests to 
+`/v2/service_instances/:instance_id/extensions/restart`.
 
 ## Binding
 
