@@ -549,8 +549,9 @@ schema being used.
 
 | Response Field | Type | Description |
 | --- | --- | --- |
-| id* | string | A Uniform Resource Name ([URN](https://tools.ietf.org/html/rfc2141)) that uniquely identifies the extension. It MUST include the namespace identifier `osbext` and a specific string for the extension. For example `urn:osbext:backup/v1`.|
-| openapi_url* | string | A URL pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URL then it MUST have no authentication and be publicly available. If this is a relative URL then it MUST to be hosted on the Service Broker. All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints. See [Service Instance Extensions](#service-instance-extensions) for more information.|
+| id* | string | A Uniform Resource Name ([URN](https://tools.ietf.org/html/rfc2141)) that uniquely identifies the extension. It MUST include the namespace identifier(NID) `osbext` and a specific string(NSS) for the extension. For example `urn:osbext:/v1/backup`. |
+| description | string | A short description of the service instance extension. If present, MUST be a non-empty string. |
+| openapi_url* | string | A URI pointing to a valid [OpenAPI 3.0+](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) document describing the API extension(s) available on each Service Instance of the Service Plan. If this is an absolute URI then it MUST have no authentication and be publicly available. If this is a relative URI then it is assumed to be hosted on the Service Broker and behind the [Service Broker Authentication](#service-broker-authentication). All [Path Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathsObject) MUST be hosted by the Service Broker and MUST be relative the URL `/v2/service_instances/:instance_id/extensions/:nss` where `:nss` is the namespace specific string(NSS) part of the extension `id`. The Service Broker MUST use the same authentication method used for other Open Service Broker API endpoints.|
 
 \* Fields with an asterisk are REQUIRED.
 
@@ -1291,21 +1292,21 @@ document:
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Instance Restart
+  title: Backup Servie Instance
 paths:
-  /restart:
+  /start:
     put:
-      summary: Restart the server
-      operationId: restart
+      summary: Backup of a service instance
+      operationId: start
       tags:
-        - restart
+        - start
       responses:
         '202':
-          description: Restart accepted
+          description: Backup accepted
 ```
 
 In this case the broker MUST handle `PUT` requests to
-`/v2/service_instances/:instance_id/extensions/restart`.
+`/v2/service_instances/:instance_id/extensions/v1/backup/start`.
 
 ## Binding
 
