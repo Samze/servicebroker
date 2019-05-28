@@ -651,14 +651,18 @@ schema being used.
       "maintenance_info": {
         "version": "2.1.1+abcdef",
       },
-      "extensions": [{
-        "id": "urn:osbext:/v1/backup-and-restore",
-        "openapi_url": "http://example.com/extensions/backup_restore.yaml"
-      },
-      {
-        "id": "urn:osbext:/v1/ping",
-        "openapi_url": "/extensions/ping.yaml"
-      }]
+      "extensions": [
+        {
+          "id": "urn:osbext:/v1/backup-and-restore",
+          "description": "backup and restore service instance data",
+          "openapi_url": "http://example.com/extensions/backup_restore.yaml"
+        },
+        {
+          "id": "urn:osbext:/v1/ping",
+          "description": "check the health of a service instance",
+          "openapi_url": "/extensions/ping.yaml"
+        }
+      ]
     }, {
       "name": "fake-plan-2",
       "id": "0f4008b5-XXXX-XXXX-XXXX-dace631cd648",
@@ -1292,6 +1296,7 @@ For example a Service Broker may define a Service Instance Extension in the [Cat
 ```json
 {
   "id": "urn:osbext:/custom-extension",
+  "description": "Allows backing up of service instance data",
   "openapi_url": "/extensions/custom-extension.yaml"
 }
 ```
